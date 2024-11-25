@@ -1,0 +1,51 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# (1) 実験データ（例）
+# 長さ (cm) と対応する電流値 (mA) のデータ
+lengths = np.array([2, 4, 6, 8, 10])  # 長さ (cm)
+currents = np.array([100, 80, 60, 50, 40])  # 電流値 (mA)
+
+# (2) 測定された電流値の逆数（1/I）を計算
+inverse_currents = 1 / currents  # 電流の逆数
+
+# (3) ばらつきの評価（標準偏差を計算）
+std_current = np.std(currents)
+std_inverse_current = np.std(inverse_currents)
+
+# (4) 抵抗値の計算（オームの法則を用いて、R = V / I と仮定）
+# 電圧Vは一定と仮定し、R = L / I として計算する場合、Lは長さ、Iは電流
+# 抵抗の理論値（単位: Ω） = 長さ / 電流
+# ここでは仮定として、電圧Vと比例係数が1とし、直接的に長さと電流の比で抵抗を評価します。
+
+resistances = lengths / currents  # 抵抗の計算
+
+# (5) グラフのプロット
+fig, ax1 = plt.subplots()
+
+# (6) 長さに対する電流のグラフ（縦軸: I）
+ax1.set_xlabel('Length (cm)')
+ax1.set_ylabel('Current (mA)', color='tab:blue')
+ax1.plot(lengths, currents, color='tab:blue', label='Current (I)')
+ax1.tick_params(axis='y', labelcolor='tab:blue')
+
+# (7) 長さに対する電流の逆数のグラフ（縦軸: 1/I）
+ax2 = ax1.twinx()  
+ax2.set_ylabel('1/Current (1/mA)', color='tab:red')
+ax2.plot(lengths, inverse_currents, color='tab:red', label='1/Current (1/I)')
+ax2.tick_params(axis='y', labelcolor='tab:red')
+
+# グラフのタイトルと表示
+fig.tight_layout()
+plt.title('Current and its Inverse vs Length')
+plt.grid(True)
+plt.show()
+
+# (8) ばらつき評価結果の表示
+print(f"電流値の標準偏差: {std_current:.3f} mA")
+print(f"電流逆数の標準偏差: {std_inverse_current:.3f} (1/mA)")
+
+# (9) 抵抗値の計算結果を表示
+print("長さと電流に基づく計算された抵抗値（単位: Ω）:")
+for i, r in enumerate(resistances):
+    print(f"長さ {lengths[i]} cm: 抵抗 {r:.3f} Ω")
