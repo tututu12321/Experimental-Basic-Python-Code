@@ -1,0 +1,38 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# Shockley diode equation model
+def shockley_diode(V, I_0, n, T, q=1.602e-19, k_B=1.38e-23):
+    return I_0 * (np.exp((q * V) / (n * k_B * T)) - 1)
+
+# Example measured data (replace with your actual measurements)
+# Measured voltage (V) and current (I) data points
+V_data = np.array([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])  # Example voltage data (V)
+I_data = np.array([0, 1e-12, 2e-12, 3e-12, 5e-12, 8e-12, 1.3e-11, 2.1e-11, 3.2e-11, 4.5e-11, 6.5e-11])  # Example current data (A)
+
+# Fit the data using curve fitting
+# p0 are initial guesses for the parameters (I_0, n, T)
+popt, pcov = curve_fit(shockley_diode, V_data, I_data, p0=[1e-12, 1, 300])
+
+# Extract the fitted parameters
+I_0_fitted, n_fitted, T_fitted = popt
+
+# Generate the fitted current based on the model
+I_fitted = shockley_diode(V_data, *popt)
+
+# Plot the data points and the fitted curve
+plt.plot(V_data, I_data, 'o', label='Measured Data', color='red')
+plt.plot(V_data, I_fitted, label=f'Fitted Model: $I_0={I_0_fitted:.2e}$, $n={n_fitted:.2f}$, $T={T_fitted:.2f}$ K', color='blue')
+plt.xlabel('Voltage (V) [V]')
+plt.ylabel('Current (I) [A]')
+plt.title('Diode Current vs Voltage - Fit')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Print the fitted parameters
+print(f"Fitted Parameters:")
+print(f"I_0 = {I_0_fitted:.2e} A")
+print(f"n = {n_fitted:.2f}")
+print(f"T = {T_fitted:.2f} K")
