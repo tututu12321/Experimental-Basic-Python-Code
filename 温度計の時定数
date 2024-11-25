@@ -1,0 +1,37 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# Exponential decay model function
+def exponential_decay(t, theta_0, T):
+    return theta_0 * np.exp(-t / T)
+
+# Example data (time in seconds, temperature in degrees)
+# Replace these values with actual data
+time_data = np.array([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50])  # Time in seconds
+temperature_data = np.array([25, 22.4, 20.2, 18.1, 16.5, 15.0, 13.7, 12.5, 11.5, 10.5, 9.7])  # Temperature in degrees
+
+# Fit the exponential decay model to the data
+params, covariance = curve_fit(exponential_decay, time_data, temperature_data, p0=[max(temperature_data), 20])
+
+# Extract the parameters (theta_0 and T)
+theta_0, T = params
+
+# Create a model using the fitted parameters for plotting
+time_model = np.linspace(0, max(time_data), 100)
+temperature_model = exponential_decay(time_model, *params)
+
+# Plot the original data and the fitted curve
+plt.scatter(time_data, temperature_data, color='red', label='Measured data')
+plt.plot(time_model, temperature_model, color='blue', label=f'Fitted model: $y(t) = {theta_0:.2f} * exp(-t/{T:.2f})$')
+plt.xlabel('Time (seconds)')
+plt.ylabel('Temperature (degrees)')
+plt.title('Exponential Decay of Temperature Over Time')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Print the fitted parameters
+print(f"Fitted parameters:")
+print(f"Initial temperature (θ0): {theta_0:.2f} degrees")
+print(f"Time constant (T): {T:.2f} seconds")
