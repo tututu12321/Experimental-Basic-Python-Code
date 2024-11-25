@@ -1,0 +1,42 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# Model for the relationship between Resistance and Temperature
+def temperature_model(R, T1, B, R1):
+    return 1 / T1 + (1 / B) * np.log(R / R1)
+
+# Example data (Replace with actual data)
+# Resistance data (Ohms)
+resistances = np.array([100, 200, 300, 400, 500, 600, 700])  # Replace with your measured resistance values
+# Corresponding Temperature data (Kelvin)
+temperatures = np.array([298, 310, 320, 330, 340, 350, 360])  # Replace with your measured temperature values
+
+# Initial guess for the parameters (T1, B, R1)
+initial_guess = [298, 1e-3, 100]  # T1 = 298 K, B (arbitrary), R1 = 100 Ohms (initial guess)
+
+# Fit the model to the data
+params, covariance = curve_fit(temperature_model, resistances, temperatures, p0=initial_guess)
+
+# Extract the fitted parameters
+T1_fitted, B_fitted, R1_fitted = params
+
+# Generate a range of resistances to plot the fitted curve
+R_fit = np.linspace(min(resistances), max(resistances), 1000)
+T_fit = temperature_model(R_fit, *params)
+
+# Plot the measured data and the fitted curve
+plt.scatter(resistances, temperatures, color='red', label='Measured Data')
+plt.plot(R_fit, T_fit, color='blue', label=f'Fitted Model: T(R) = 1/{T1_fitted:.2f} + 1/{B_fitted:.2e} * log(R/{R1_fitted:.2f})')
+plt.xlabel('Resistance (Ohms)')
+plt.ylabel('Temperature (K)')
+plt.title('Temperature vs Resistance')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Print the fitted parameters
+print(f"Fitted Parameters:")
+print(f"T1 = {T1_fitted:.2f} K")
+print(f"B = {B_fitted:.2e}")
+print(f"R1 = {R1_fitted:.2f} Ohms")
