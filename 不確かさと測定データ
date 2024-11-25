@@ -1,0 +1,36 @@
+import numpy as np
+
+# 例としての測定データ（実際のデータに置き換えてください）
+times = np.array([1.02, 1.03, 1.01, 1.04, 1.02])  # 測定した時間（秒）
+
+# ステップ1: 平均時間 (tau) を計算
+tau = np.mean(times)
+print(f"平均時間 (tau): {tau:.4f} 秒")
+
+# ステップ2: 時間の不確かさ (Delta tau) を計算
+tau_99 = 1.96  # 99%の信頼区間に対応するt分布の近似値
+delta_tau = tau_99 * np.sqrt(np.sum((times - tau)**2) / len(times))  # 時間の不確かさ
+print(f"時間の不確かさ (Delta tau): {delta_tau:.4f} 秒")
+
+# ステップ3: 角周波数 (omega) を計算
+T = tau  # 振り子の周期 T は平均時間 tau と仮定
+omega = 2 * np.pi / T  # 角周波数の計算
+print(f"角周波数 (omega): {omega:.4f} ラジアン/秒")
+
+# ステップ4: 角周波数の不確かさ (Delta omega) を計算
+delta_omega = (2 * np.pi / T**2) * delta_tau  # 角周波数の不確かさ
+print(f"角周波数の不確かさ (Delta omega): {delta_omega:.4f} ラジアン/秒")
+
+# ステップ5: 慣性モーメント (k) を計算
+M = 0.5  # 質量 (kg)
+l = 0.2  # 長さ (m)
+delta_l = 0.01  # 長さの不確かさ (m)
+
+k = M * l**2  # 慣性モーメントの計算
+delta_k = 2 * M * l * delta_l  # 慣性モーメントの不確かさ
+print(f"慣性モーメント (k): {k:.4f} kg*m^2")
+print(f"慣性モーメントの不確かさ (Delta k): {delta_k:.4f} kg*m^2")
+
+# ステップ6: 重力加速度 (g) を計算
+g = k / delta_k  # 重力加速度の計算
+print(f"重力加速度 (g): {g:.4f} m/s^2")
