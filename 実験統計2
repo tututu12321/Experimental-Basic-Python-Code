@@ -1,0 +1,57 @@
+import numpy as np
+
+# (1) ノギスとマイクロメーターでの測定値の平均と標準偏差を計算
+def calculate_mean_and_std(measurements):
+    """測定値の平均と標準偏差を計算する"""
+    mean = np.mean(measurements)
+    std_dev = np.std(measurements)
+    return mean, std_dev
+
+# (2) 測定機器の最小読み取り値の半分と比較
+def compare_with_half_of_resolution(mean, std_dev, resolution):
+    """最小読み取り値の半分と比較して誤差を評価する"""
+    half_resolution = resolution / 2
+    if std_dev < half_resolution:
+        print(f"標準偏差（{std_dev:.3f}）は最小読み取り値の半分（{half_resolution}）より小さい。誤差は機器の精度によるものと考えられる。")
+    else:
+        print(f"標準偏差（{std_dev:.3f}）は最小読み取り値の半分（{half_resolution}）より大きい。誤差は測定のばらつきによるもの。")
+
+# (3) 体積の計算と不確かさの伝播
+def calculate_volume_and_uncertainty(diameter, height, uncertainty_diameter, uncertainty_height):
+    """円柱の体積とその不確かさを計算する"""
+    radius = diameter / 2
+    volume = np.pi * radius**2 * height
+
+    # 体積の不確かさ（誤差）を伝播させる
+    uncertainty_volume = np.sqrt((2 * np.pi * radius * height * uncertainty_diameter)**2 + (np.pi * diameter**2 * uncertainty_height)**2)
+    
+    return volume, uncertainty_volume
+
+# (4) 実験データ
+# ノギスとマイクロメーターで測定した直径と高さのデータ
+diameter_measurements = np.array([5.02, 5.01, 5.03, 5.02, 5.04, 5.03])  # mm
+height_measurements = np.array([10.01, 10.02, 10.00, 10.03, 10.01, 10.02])  # mm
+
+# ノギスとマイクロメーターの最小読み取り値の半分（例: 0.01mm）
+resolution_diameter = 0.01  # mm
+resolution_height = 0.01  # mm
+
+# (5) 平均と標準偏差の計算
+mean_diameter, std_diameter = calculate_mean_and_std(diameter_measurements)
+mean_height, std_height = calculate_mean_and_std(height_measurements)
+
+# (6) 測定値の評価
+compare_with_half_of_resolution(mean_diameter, std_diameter, resolution_diameter)
+compare_with_half_of_resolution(mean_height, std_height, resolution_height)
+
+# (7) 体積の計算と不確かさの計算
+uncertainty_diameter = std_diameter  # 直径の不確かさ
+uncertainty_height = std_height  # 高さの不確かさ
+
+volume, uncertainty_volume = calculate_volume_and_uncertainty(mean_diameter, mean_height, uncertainty_diameter, uncertainty_height)
+
+# (8) 結果の表示
+print(f"直径の平均値: {mean_diameter:.3f} mm, 標準偏差: {std_diameter:.3f} mm")
+print(f"高さの平均値: {mean_height:.3f} mm, 標準偏差: {std_height:.3f} mm")
+print(f"円柱の体積: {volume:.3f} mm³")
+print(f"体積の不確かさ: {uncertainty_volume:.3f} mm³")
