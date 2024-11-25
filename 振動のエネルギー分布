@@ -1,0 +1,23 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Constants (you can replace these values with your own)
+E_0 = 1.0    # Initial energy
+lambda_n = 1.0  # Wavelength in meters
+f_n = 1.0    # Frequency in Hz
+x = 1.0      # Position in meters
+
+# Time array (you can adjust the time range and resolution)
+t = np.linspace(0, 10, 1000)  # Time from 0 to 10 seconds, with 1000 points
+
+# Calculate the energy E as a function of time
+E = E_0 * np.cos(2 * np.pi * x / lambda_n)**2 * np.cos(2 * np.pi * f_n * t)**2
+
+# Plot the energy E vs time t
+plt.plot(t, E, label=r'$E = E_0 \cos^2(2 \pi x / \lambda_n) \cos^2(2 \pi f_n t)$')
+plt.xlabel('Time (t) [s]')
+plt.ylabel('Energy (E)')
+plt.title('Energy vs Time')
+plt.legend()
+plt.grid(True)
+plt.show()
